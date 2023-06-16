@@ -1,71 +1,29 @@
-# react-component-template README
+# React Component Template
 
-This is the README for your extension "react-component-template". After writing up a brief description, we recommend including the following sections.
+A extensão React Component Template para o Visual Studio Code ajuda você a criar rapidamente a estrutura de arquivos para um novo componente React.
 
-## Features
+## Instalação
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Para instalar a extensão React Component Template, abra o Visual Studio Code, clique na extensão View icon, e procure por 'React Component Template'. Clique em 'Install' para instalar a extensão.
 
-For example if there is an image subfolder under your extension project workspace:
+## Uso
 
-\!\[feature X\]\(images/feature-x.png\)
+Para usar a extensão, navegue até a pasta onde você deseja criar o novo componente no explorer do VSCode. Clique com o botão direito na pasta e selecione 'React Component Template'. Você será solicitado a fornecer um nome para o novo componente. A extensão criará a estrutura de arquivos para o novo componente na pasta selecionada.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Configuração
 
-## Requirements
+Atualmente, a extensão não oferece opções de configuração.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+## Problemas Conhecidos
 
-## Extension Settings
+Não há problemas conhecidos no momento.
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+## Contribuição
 
-For example:
+Se você encontrou um problema ou tem uma sugestão de melhoria, por favor crie um problema no repositório do GitHub da extensão. Contribuições na forma de solicitações pull também são bem-vindas.
 
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
+## Changelog
 
 ### 1.0.0
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Lançamento inicial da extensão.
