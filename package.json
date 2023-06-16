@@ -1,7 +1,7 @@
 {
  "publisher": "zCaioSantos",
- "name": "react-component-template",
- "displayName": "React Component Template",
+ "name": "create-component-template",
+ "displayName": "Create Component Template",
  "description": "Simplify React component creation with this template generator for VSCode. Simply set the component's name, and the extension will take care of the rest.",
  "version": "2.0.0",
  "engines": {
@@ -25,17 +25,21 @@
   "commands": [
    {
     "command": "react-component-template.reactComponentTemplate",
-    "title": "React Component Template"
+    "title": "Create Component Template"
    },
    {
     "command": "react-component-template.openTemplate",
-    "title": "Open React Component Template"
+    "title": "Open File Component Template"
    }
   ],
   "menus": {
    "explorer/context": [
     {
      "command": "react-component-template.reactComponentTemplate",
+     "when": "explorerResourceIsFolder"
+    },
+    {
+     "command": "react-component-template.openTemplate",
      "when": "explorerResourceIsFolder"
     }
    ]
