@@ -10,6 +10,10 @@
  "categories": [
   "Other"
  ],
+ "license": "MIT",
+ "files": [
+  "LICENSE"
+ ],
  "icon": "icon.png",
  "activationEvents": [],
  "main": "./dist/extension.js",
