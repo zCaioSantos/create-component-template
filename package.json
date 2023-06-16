@@ -1,9 +1,9 @@
 {
  "publisher": "zCaioSantos",
  "name": "react-component-template",
- "displayName": "react-component-template",
+ "displayName": "React Component Template",
  "description": "Simplify React component creation with this template generator for VSCode. Simply set the component's name, and the extension will take care of the rest.",
- "version": "1.0.0",
+ "version": "1.0.1",
  "engines": {
   "vscode": "^1.79.0"
  },
