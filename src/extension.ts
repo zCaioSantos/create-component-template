@@ -1,115 +1,213 @@
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
+interface FileTemplate {
+ name: string;
+ content: string;
+}
+
+interface FolderTemplate {
+ name: string;
+ files?: (FolderTemplate | FileTemplate)[];
+}
+
+interface Template {
+ name: string;
+ description: string;
+ folderName: string;
+ structure: (FolderTemplate | FileTemplate)[];
+}
+
+function readTemplates(context: vscode.ExtensionContext): Template[] {
+ const homeDir = os.homedir();
+ const extensionDir = path.join(homeDir, '.myextension');
+ const templatesPath = path.join(extensionDir, 'templates.json');
+
+ const templatesData = fs.readFileSync(templatesPath, 'utf-8');
+
+ const templates = JSON.parse(templatesData, (key, value) => {
+  if (key === 'structure' && Array.isArray(value)) {
+   return value as (FolderTemplate | FileTemplate)[];
+  }
+  return value;
+ }) as Template[];
+
+ return templates;
+}
+
 export function activate(context: vscode.ExtensionContext) {
+ const homeDir = os.homedir();
+ const extensionDir = path.join(homeDir, '.myextension');
+ const templatesPath = path.join(extensionDir, 'templates.json');
+
+ if (!fs.existsSync(extensionDir)) {
+  fs.mkdirSync(extensionDir);
+ }
+
+ if (!fs.existsSync(templatesPath)) {
+  const defaultTemplates = getDefaultTemplates();
+  fs.writeFileSync(templatesPath, JSON.stringify(defaultTemplates, null, 2));
+ }
+
  let disposable = vscode.commands.registerCommand(
   'react-component-template.reactComponentTemplate',
   async (folder: vscode.Uri) => {
    const folderPath = folder.fsPath;
 
-   let componentName = await vscode.window.showInputBox({
-    prompt: 'Nome do Componente',
+   const templates = readTemplates(context);
+
+   const templateItems: vscode.QuickPickItem[] = templates.map((template) => ({
+    label: template.name,
+    description: template.description,
+   }));
+
+   const selectedTemplate = await vscode.window.showQuickPick(templateItems, {
+    placeHolder: 'Selecione um template',
    });
 
-   // Se o usuário não forneceu um nome, abortamos a operação
-   if (!componentName) {
-    vscode.window.showErrorMessage(
-     'Por favor, insira um nome para o componente.'
-    );
+   if (!selectedTemplate) {
     return;
    }
 
-   // Verificar se o componente já existe
-   const componentFolderPath = path.join(folderPath, componentName);
-   if (fs.existsSync(componentFolderPath)) {
-    const overwrite = await vscode.window.showErrorMessage(
-     'Já existe um componente com esse nome. Deseja sobrescrever?',
+   const template = templates.find((t) => t.name === selectedTemplate.label);
+
+   if (!template) {
+    return;
+   }
+
+   const folderName = await vscode.window.showInputBox({
+    placeHolder: 'Digite o nome da pasta',
+   });
+
+   if (!folderName) {
+    vscode.window.showInformationMessage('Nome de pasta é obrigatório.');
+    return;
+   }
+
+   const templateFolderPath = path.join(
+    folderPath,
+    template.folderName.replace(/__folderName__/g, folderName)
+   );
+
+   if (fs.existsSync(templateFolderPath)) {
+    const confirmReplace = await vscode.window.showWarningMessage(
+     `Uma pasta com o nome '${folderName}' já existe. Deseja substituir?`,
+     { modal: true },
      'Sim',
      'Não'
     );
-    if (overwrite !== 'Sim') {
-     return;
+
+    if (confirmReplace !== 'Sim') {
+     return; // Cancelar a criação do template
     }
-    // Remover a pasta existente antes de criar uma nova
-    fs.rmdirSync(componentFolderPath, { recursive: true });
    }
 
-   fs.mkdirSync(componentFolderPath);
-   fs.mkdirSync(path.join(componentFolderPath, 'hooks'));
-   fs.mkdirSync(path.join(componentFolderPath, 'helpers'));
+   try {
+    fs.mkdirSync(templateFolderPath, { recursive: true });
+    createTemplateStructure(templateFolderPath, template.structure, folderName);
 
-   fs.writeFileSync(
-    path.join(componentFolderPath, 'Controller.tsx'),
-    getControllerTemplate()
-   );
+    vscode.window.showInformationMessage('Template criado com sucesso!');
+   } catch (error) {
+    vscode.window.showErrorMessage(
+     `Ocorreu um erro ao criar o template: ${error}`
+    );
+   }
+  }
+ );
 
-   fs.writeFileSync(
-    path.join(componentFolderPath, 'Layout.tsx'),
-    getLayoutTemplate()
-   );
+ let disposableOpenTemplate = vscode.commands.registerCommand(
+  'react-component-template.openTemplate',
+  async () => {
+   const homeDir = os.homedir();
+   const extensionDir = path.join(homeDir, '.myextension');
+   const templatesPath = path.join(extensionDir, 'templates.json');
 
-   fs.writeFileSync(
-    path.join(componentFolderPath, 'index.ts'),
-    getIndexTemplate(componentName)
-   );
-
-   fs.writeFileSync(
-    path.join(componentFolderPath, 'styles.ts'),
-    getStylesTemplate()
-   );
-
-   fs.writeFileSync(
-    path.join(componentFolderPath, 'mocks.ts'),
-    getMocksTemplate()
-   );
-
-   fs.writeFileSync(
-    path.join(componentFolderPath, 'data.ts'),
-    getDataTemplate()
-   );
+   if (fs.existsSync(templatesPath)) {
+    let document = await vscode.workspace.openTextDocument(templatesPath);
+    await vscode.window.showTextDocument(document);
+   } else {
+    vscode.window.showErrorMessage(
+     `O arquivo de template não existe: ${templatesPath}`
+    );
+   }
   }
  );
 
  context.subscriptions.push(disposable);
+ context.subscriptions.push(disposableOpenTemplate);
 }
 
-function getControllerTemplate(): string {
- return `import { Layout } from './Layout';
-
-export function Controller() {
- return <Layout />;
-}`;
+function createTemplateStructure(
+ parentFolderPath: string,
+ structure: (FolderTemplate | FileTemplate)[],
+ folderName: string
+) {
+ for (const item of structure) {
+  const itemName = item.name.replace(/__folderName__/g, folderName);
+  if ('files' in item) {
+   // Trate 'item' como uma pasta
+   const folderPath = path.join(parentFolderPath, itemName);
+   if (!fs.existsSync(folderPath)) {
+    fs.mkdirSync(folderPath);
+   }
+   if (item.files) {
+    createTemplateStructure(folderPath, item.files, folderName);
+   }
+  } else {
+   // Trate 'item' como um arquivo
+   const filePath = path.join(parentFolderPath, itemName);
+   if ('content' in item) {
+    fs.writeFileSync(
+     filePath,
+     item.content.replace(/__folderName__/g, folderName)
+    );
+   } else {
+    fs.writeFileSync(filePath, '');
+   }
+  }
+ }
 }
 
-function getLayoutTemplate(): string {
- return `export function Layout() {
- return (
-     <div>
-         {/* Layout */}
-     </div>
- );
-}`;
-}
-
-function getIndexTemplate(componentName: string): string {
- return `import { Controller } from './Controller';
-
-(Controller as any).displayName = '${componentName}';
-
-export { Controller as ${componentName} };`;
-}
-
-function getStylesTemplate(): string {
- return `import styled, { keyframes } from 'styled-components';
-
-export const Container = styled.div\`\`;`;
-}
-
-function getMocksTemplate(): string {
- return `export const mocks = {};`;
-}
-
-function getDataTemplate(): string {
- return `export const useData = () => {};`;
+function getDefaultTemplates(): Template[] {
+ // Implemente esta função para retornar os templates padrões.
+ return [
+  {
+   name: 'React Component Template',
+   description: 'Template de exemplo',
+   folderName: '__folderName__',
+   structure: [
+    {
+     name: 'helps',
+     files: [],
+    },
+    {
+     name: 'hooks',
+     files: [
+      {
+       name: 'useData.ts',
+       content: '',
+      },
+     ],
+    },
+    {
+     name: 'Controller.tsx',
+     content: '',
+    },
+    {
+     name: 'Layout.tsx',
+     content: '',
+    },
+    {
+     name: 'styles.ts',
+     content: '',
+    },
+    {
+     name: 'index.ts',
+     content: '// __folderName__',
+    },
+   ],
+  },
+ ];
 }
