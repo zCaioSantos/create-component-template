@@ -175,7 +175,8 @@ function getDefaultTemplates(): Template[] {
  return [
   {
    name: 'React Component Template',
-   description: 'Template de exemplo',
+   description:
+    'Template de exemplo para criar componentes React com estrutura básica',
    folderName: '__folderName__',
    structure: [
     {
@@ -187,25 +188,33 @@ function getDefaultTemplates(): Template[] {
      files: [
       {
        name: 'useData.ts',
-       content: '',
+       content: 'export const useData = () => {};',
       },
      ],
     },
     {
      name: 'Controller.tsx',
-     content: '',
+     content:
+      "import { Layout } from './Layout';\n// import { useData } from './hooks/useData';\n\nexport function Controller() {\n  // const { data } = useData();\n  return <Layout />;\n}",
     },
     {
      name: 'Layout.tsx',
-     content: '',
+     content:
+      'import { Container } from "./styles"\n\nexport function Layout() {\n  return <Container />;\n}',
     },
     {
      name: 'styles.ts',
-     content: '',
+     content:
+      "import styled from 'styled-components';\n\nexport const Container = styled.div``;",
     },
     {
      name: 'index.ts',
-     content: '// __folderName__',
+     content:
+      "import { Controller } from './Controller';\n\n(Controller as any).displayName = '__folderName__';\n\nexport { Controller as __folderName__ };",
+    },
+    {
+     name: 'types.ts',
+     content: '// Example types file',
     },
    ],
   },
