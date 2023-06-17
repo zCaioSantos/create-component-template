@@ -1,17 +1,17 @@
-# React Component Template
+# Create Component Template
 
 A extensão Create Component Template para o Visual Studio Code ajuda você a criar rapidamente a estrutura de arquivos para qualquer projeto.
 
 ## Instalação
 
-Para instalar a extensão React Component Template, abra o Visual Studio Code, clique no ícone de extensões (View icon) e procure por 'React Component Template'. Clique em 'Install' para instalar a extensão.
+Para instalar a extensão Create Component Template, abra o Visual Studio Code, clique no ícone de extensões (View icon) e procure por 'Create Component Template'. Clique em 'Install' para instalar a extensão.
 
 ## Uso
 
 ### Criando um novo componente
 
 1. Navegue até a pasta onde você deseja criar o novo componente no explorador de arquivos do VSCode.
-2. Clique com o botão direito na pasta e selecione 'React Component Template'.
+2. Clique com o botão direito na pasta e selecione 'Create Component Template'.
 3. Você será solicitado a fornecer um nome para o novo componente e um nome para a pasta. Digite os nomes desejados.
 4. A extensão criará a estrutura de arquivos para o novo componente na pasta selecionada, substituindo qualquer componente existente com o mesmo nome.
 
@@ -20,7 +20,7 @@ Para instalar a extensão React Component Template, abra o Visual Studio Code, c
 Você pode editar os templates existentes ou criar seus próprios templates personalizados. Os templates são definidos em um arquivo JSON chamado `templates.json`. Siga as etapas abaixo para editar ou criar templates:
 
 1. Abra o Visual Studio Code.
-2. Clique no ícone de extensões (View icon) e procure por 'React Component Template'.
+2. Clique no ícone de extensões (View icon) e procure por 'Create Component Template'.
 3. Clique com o botão direito na extensão e selecione 'Open Extension Settings'.
 4. Na seção 'Templates', clique em 'Edit in settings.json'.
 5. O arquivo `settings.json` será aberto com a configuração dos templates.
