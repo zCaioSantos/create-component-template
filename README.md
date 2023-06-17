@@ -1,6 +1,6 @@
 # React Component Template
 
-A extensão React Component Template para o Visual Studio Code ajuda você a criar rapidamente a estrutura de arquivos para um novo componente React.
+A extensão Create Component Template para o Visual Studio Code ajuda você a criar rapidamente a estrutura de arquivos para qualquer projeto.
 
 ## Instalação
 
