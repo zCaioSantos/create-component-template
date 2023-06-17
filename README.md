@@ -50,7 +50,7 @@ Se você encontrou um problema ou tem uma sugestão de melhoria, por favor crie 
 
 ## Changelog
 
-### 2.0.0
+### 2.0.2
 
 - Adicionada a funcionalidade de permitir que o usuário forneça um nome para a pasta do componente.
 - Adicionada a verificação e confirmação antes de substituir uma pasta existente com o mesmo nome.

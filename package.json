@@ -3,7 +3,7 @@
  "name": "create-component-template",
  "displayName": "Create Component Template",
  "description": "The Create Component Template extension for Visual Studio Code helps you quickly create the file structure for any project.",
- "version": "2.0.1",
+ "version": "2.0.2",
  "engines": {
   "vscode": "^1.79.0"
  },
