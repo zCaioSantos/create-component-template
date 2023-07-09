@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 
 interface FileTemplate {
  name: string;
- content: string;
+ content: string[];
 }
 
 interface FolderTemplate {
@@ -159,19 +159,18 @@ function createTemplateStructure(
    // Trate 'item' como um arquivo
    const filePath = path.join(parentFolderPath, itemName);
    if ('content' in item) {
-    fs.writeFileSync(
-     filePath,
-     item.content.replace(/__folderName__/g, folderName)
-    );
+    const content = Array.isArray(item.content)
+     ? item.content.join(os.EOL)
+     : item.content;
+    fs.writeFileSync(filePath, content, { encoding: 'utf-8', flag: 'w' });
    } else {
-    fs.writeFileSync(filePath, '');
+    fs.writeFileSync(filePath, '', { encoding: 'utf-8', flag: 'w' });
    }
   }
  }
 }
 
 function getDefaultTemplates(): Template[] {
- // Implemente esta função para retornar os templates padrões.
  return [
   {
    name: 'React Component Template',
@@ -188,33 +187,53 @@ function getDefaultTemplates(): Template[] {
      files: [
       {
        name: 'useData.ts',
-       content: 'export const useData = () => {};',
+       content: ['export const useData = () => {};'],
       },
      ],
     },
     {
      name: 'Controller.tsx',
-     content:
-      "import { Layout } from './Layout';\n// import { useData } from './hooks/useData';\n\nexport function Controller() {\n  // const { data } = useData();\n  return <Layout />;\n}",
+     content: [
+      "import { Layout } from './Layout';",
+      "// import { useData } from './hooks/useData';",
+      '',
+      'export function Controller() {',
+      '  // const { data } = useData();',
+      '  return <Layout />;',
+      '}',
+     ],
     },
     {
      name: 'Layout.tsx',
-     content:
-      'import { Container } from "./styles"\n\nexport function Layout() {\n  return <Container />;\n}',
+     content: [
+      'import { Container } from "./styles"',
+      '',
+      'export function Layout() {',
+      '  return <Container />;',
+      '}',
+     ],
     },
     {
      name: 'styles.ts',
-     content:
-      "import styled from 'styled-components';\n\nexport const Container = styled.div``;",
+     content: [
+      "import styled from 'styled-components';",
+      '',
+      'export const Container = styled.div``;',
+     ],
     },
     {
      name: 'index.ts',
-     content:
-      "import { Controller } from './Controller';\n\n(Controller as any).displayName = '__folderName__';\n\nexport { Controller as __folderName__ };",
+     content: [
+      "import { Controller } from './Controller';",
+      '',
+      "(Controller as any).displayName = '__folderName__';",
+      '',
+      'export { Controller as __folderName__ };',
+     ],
     },
     {
      name: 'types.ts',
-     content: '// Example types file',
+     content: ['// Example types file'],
     },
    ],
   },
