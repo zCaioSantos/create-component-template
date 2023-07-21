@@ -100,7 +100,7 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     if (confirmReplace !== 'Sim') {
-     return; // Cancelar a criação do template
+     return;
     }
    }
 
@@ -159,10 +159,18 @@ function createTemplateStructure(
    // Trate 'item' como um arquivo
    const filePath = path.join(parentFolderPath, itemName);
    if ('content' in item) {
-    const content = Array.isArray(item.content)
-     ? item.content.join(os.EOL)
-     : item.content;
-    fs.writeFileSync(filePath, content, { encoding: 'utf-8', flag: 'w' });
+    const contentArray = Array.isArray(item.content)
+     ? item.content
+     : [item.content];
+
+    const replacedContent = contentArray.map((line) =>
+     line.replace(/__folderName__/g, folderName)
+    );
+
+    fs.writeFileSync(filePath, replacedContent.join(os.EOL), {
+     encoding: 'utf-8',
+     flag: 'w',
+    });
    } else {
     fs.writeFileSync(filePath, '', { encoding: 'utf-8', flag: 'w' });
    }
@@ -174,8 +182,7 @@ function getDefaultTemplates(): Template[] {
  return [
   {
    name: 'React Component Template',
-   description:
-    'Template de exemplo para criar componentes React com estrutura básica',
+   description: 'Exemplo para criar templates de pastas com estrutura básica.',
    folderName: '__folderName__',
    structure: [
     {
@@ -206,17 +213,17 @@ function getDefaultTemplates(): Template[] {
     {
      name: 'Layout.tsx',
      content: [
-      'import { Container } from "./styles"',
+      "import * as S from './styles';",
       '',
       'export function Layout() {',
-      '  return <Container />;',
+      '  return <S.Container />;',
       '}',
      ],
     },
     {
      name: 'styles.ts',
      content: [
-      "import styled from 'styled-components';",
+      "import { styled } from 'styled-components';",
       '',
       'export const Container = styled.div``;',
      ],
